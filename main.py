@@ -125,16 +125,13 @@ addTransBtn.grid(column=3, row=0)
 totalSumLbl = Label(tab4, text='Total sum: 0.00')
 totalSumLbl.grid(column=4, row=0)
 
-ttk.Label(tab4, text='Description').grid(column=1, row=1)
-ttk.Label(tab4, text='Amount').grid(column=2, row=1)
-ttk.Label(tab4, text='Tag').grid(column=3, row=1)
 ttk.Label(tab4, text='Account').grid(column=4, row=1)
 ttk.Label(tab4, text='Choose date').grid(column=5, row=1)
 ttk.Label(tab4, text='Status').grid(column=6, row=1)
 
 
 def add_item_clicked():
-    item = Item()
+    item = Item(parent=frame)
     items.append(item)
 
 
@@ -225,20 +222,20 @@ def set_total_sum(name, index, mode):
 class Item:
     row = 2
 
-    def __init__(self):
-        self.numLbl = ttk.Label(tab4, text=self.row - 1)
+    def __init__(self, parent):
+        self.numLbl = ttk.Label(parent, text=self.row - 1)
         self.numLbl.grid(column=0, row=self.row)
 
-        self.descEntry = Entry(tab4, width=30)
+        self.descEntry = Entry(parent, width=30)
         self.descEntry.grid(column=1, row=self.row)
 
         self.amountVar = DoubleVar(0)
         self.amountVar.trace('w', set_total_sum)
 
-        self.amountEntry = Entry(tab4, width=8, textvariable=self.amountVar)
+        self.amountEntry = Entry(parent, width=8, textvariable=self.amountVar)
         self.amountEntry.grid(column=2, row=self.row)
 
-        self.tagEntry = Entry(tab4, width=20)
+        self.tagEntry = Entry(parent, width=20)
         self.tagEntry.grid(column=3, row=self.row)
 
         Item.row += 1
@@ -253,13 +250,43 @@ class Item:
         return self.tagEntry
 
 
-item1 = Item()
+def myfunction(event):
+    canvas.configure(scrollregion=canvas.bbox("all"), width=400, height=300)
+
+
+def _on_mousewheel(event):
+    canvas.yview_scroll(-1*(event.delta/120), "units")
+
+
+myframe=Frame(tab4, relief=GROOVE, width=50, height=100, bd=1) # TODO: check dimensions
+myframe.grid(column=0, row=2, rowspan=10, columnspan=3)
+
+canvas = Canvas(myframe)
+frame = Frame(canvas)
+myscrollbar = Scrollbar(myframe, orient="vertical", command=canvas.yview)
+canvas.configure(yscrollcommand=myscrollbar.set)
+# canvas.bind_all("<MouseWheel>", _on_mousewheel)
+
+myscrollbar.grid(column=4, row=1, rowspan=10, columnspan=1)
+canvas.grid(column=0, row=2, rowspan=10, columnspan=3)
+canvas.create_window((0, 0), window=frame, anchor='nw')
+frame.bind("<Configure>", myfunction)
+
+ttk.Label(frame, text='Description').grid(column=1, row=0)
+ttk.Label(frame, text='Amount').grid(column=2, row=0)
+ttk.Label(frame, text='Tag').grid(column=3, row=0)
+
+# item1 = Item(parent=tab4)
+item1 = Item(parent=frame)
 items.append(item1)
+
+
+
 
 #####################################################################################
 
 
 tab_control.pack(expand=1, fill='both')
-window.geometry('800x400')
+window.geometry('820x400')
 
 window.mainloop()
