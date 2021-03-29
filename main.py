@@ -191,9 +191,13 @@ def add_multiple_transactions_clicked():
         account_id = accounts.iloc[accountMultiCombo.current()]['id']
         date_str = datetime.datetime.strptime(calMulti.get(), "%d/%m/%Y").date().strftime('%Y-%m-%d')
 
+        tr_type = 'expense'
+        if amount < 0:
+            tr_type = 'refund'
+
         if answer:
             buxfer.add_transaction(token, item.get_desc().get(), "%.2f" % amount,
-                                   "%d" % account_id, date_str, tags=item.get_tag().get(), type='expense',
+                                   "%d" % account_id, date_str, tags=item.get_tag().get(), type=tr_type,
                                    status=statusMultiCombo.get())
             print("Transaction sent!")
         else:
