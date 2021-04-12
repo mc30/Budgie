@@ -202,6 +202,22 @@ def add_multiple_transactions_clicked():
             print("Transaction sent!")
         else:
             print("Transaction cancelled!")
+            return
+
+    # Remove all items after adding transaction
+    while len(items) > 0:
+        item = items.pop(len(items) - 1)
+        item.numLbl.destroy()
+        item.descEntry.destroy()
+        item.amountEntry.destroy()
+        item.tagEntry.destroy()
+        Item.row -= 1
+
+    item = Item(parent=frame)
+    items.append(item)
+
+    set_total_sum(0, 0, 0)
+
 
 
 addMultiTransBtn = Button(tab4, text="Add transaction", bg="gray", fg="black",
